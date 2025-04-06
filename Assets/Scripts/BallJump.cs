@@ -1,17 +1,33 @@
 using UnityEngine;
-using TMPro; // Add this line if using TextMeshPro (skip if using Legacy Text)
+using TMPro; // If using TextMeshPro for the score
 
 public class BallJump : MonoBehaviour
 {
     Rigidbody2D rb;
     public float jumpForce = 400f;
-    public TextMeshProUGUI scoreText; // Link to the UI text (use Text if Legacy)
-    private int score = 0; // To keep track of the score
+    public TextMeshProUGUI scoreText; // If using TextMeshPro
+    private int score = 0;
+    private Animator animator; // For the squash-and-stretch animation
+    private AudioSource jumpSound; // For the jump sound
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        UpdateScoreText(); // Show initial score
+        animator = GetComponent<Animator>();
+        jumpSound = GetComponent<AudioSource>();
+        UpdateScoreText();
+
+        // Check if animator is missing
+        if (animator == null)
+        {
+            Debug.LogWarning("Animator component is missing on " + gameObject.name);
+        }
+
+        // Check if jumpSound is missing
+        if (jumpSound == null)
+        {
+            Debug.LogWarning("AudioSource component is missing on " + gameObject.name);
+        }
     }
 
     void Update()
@@ -19,13 +35,21 @@ public class BallJump : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) // Tap or click
         {
             rb.AddForce(Vector2.up * jumpForce);
-            score++; // Increase score by 1 each tap
-            UpdateScoreText(); // Update the text on screen
+            score++;
+            UpdateScoreText();
+            if (animator != null) // Only play animation if animator exists
+            {
+                animator.Play("BallBounce"); // Play the animation
+            }
+            if (jumpSound != null) // Only play sound if jumpSound exists
+            {
+                jumpSound.Play(); // Play the jump sound
+            }
         }
     }
 
     void UpdateScoreText()
     {
-        scoreText.text = "Score: " + score; // Update the text
+        scoreText.text = "Score: " + score;
     }
 }
