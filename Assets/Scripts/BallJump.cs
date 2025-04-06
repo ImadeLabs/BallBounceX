@@ -43,7 +43,7 @@ public class BallJump : MonoBehaviour
             }
             if (jumpSound != null) // Only play sound if jumpSound exists
             {
-                jumpSound.Play(); // Play the jump sound
+                jumpSound.Play(); // Play the jump sounds
             }
         }
     }
